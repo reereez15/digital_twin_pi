@@ -1,5 +1,6 @@
 import RPi.GPIO as gpio
 from time import sleep
+from threading import Thread
 
 class led:
     def __init__(self, pin, color):
@@ -41,7 +42,11 @@ class Button:
 leds = (led(16, "red"), led(21, "green"))
 
 def ledRedFunction():
-    leds[0].blink(10, 0.5)
+    def threadRun():
+        leds[0].blink(10, 0.5)
+
+    thread = Thread(target=threadRun, daemon=True)
+    thread.start()
 
 greenLedState = False
 
