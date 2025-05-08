@@ -8,11 +8,11 @@ class led:
         gpio.setup(pin, gpio.OUT)
         gpio.output(pin, gpio.LOW) 
         
-    def blink(self, count):
+    def blink(self , count, time):
         for _ in range(count):
-            gpio.output(pin, gpio.HIGH)
+            gpio.output(self.pin, gpio.HIGH)
             sleep(time)
-            gpio.output(pin, gpio.LOW)
+            gpio.output(self.pin, gpio.LOW)
             sleep(time)
             
     def ledOn(self):
@@ -38,14 +38,22 @@ class Button:
     def checkPressed(self, currentState):
         return currentState == gpio.HIGH and self.prevState == gpio.LOW
 
-def open():
-    print("open")
+leds = (led(16, "red"), led(21, "green"))
 
-def close():
-    print("close")
+def ledRedFunction():
+    leds[0].blink(10, 0.5)
 
-leds = (led(16, ""), led(21, ""))            
-buttons = (Button(13), Button(6))
+greenLedState = False
+
+def ledGreenFunction():
+    global greenLedState    # 함수 밖에 있는 변수를 가져다 쓰기 위한 global
+    if greenLedState:
+        leds[1].ledOff()
+    else:
+        leds[1].ledOn()
+    greenLedState = not greenLedState
+
+buttons = (Button(13, ledRedFunction), Button(6, ledGreenFunction))
 
 try:
     while True:
